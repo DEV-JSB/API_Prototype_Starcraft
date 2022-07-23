@@ -1,9 +1,10 @@
 ﻿  Prototype.cpp
-C:\Users\mvat1\source\repos\Prototype\Prototype\Prototype.cpp(199,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\mvat1\source\repos\Prototype\Prototype\Prototype.cpp(206,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\mvat1\source\repos\Prototype\Prototype\Prototype.cpp(219,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\mvat1\source\repos\Prototype\Prototype\Prototype.cpp(238,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\mvat1\source\repos\Prototype\Prototype\Prototype.cpp(259,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\mvat1\source\repos\Prototype\Prototype\Prototype.cpp(275,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\mvat1\source\repos\Prototype\Prototype\Prototype.cpp(298,27): warning C4018: '<': signed/unsigned mismatch
-  Prototype.vcxproj -> C:\Users\mvat1\source\repos\Prototype\Debug\Prototype.exe
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(200,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(207,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(220,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(246,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(267,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(280,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(346,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Prototype\Prototype.cpp(355,27): warning C4018: '<': signed/unsigned mismatch
+  Prototype.vcxproj -> C:\Users\Admin\Documents\GitHub\API_Prototype_Starcraft\Debug\Prototype.exe

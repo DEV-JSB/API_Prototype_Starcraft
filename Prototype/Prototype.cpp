@@ -4,6 +4,7 @@
 #include "framework.h"
 #include "Prototype.h"
 #include <vector>
+#include<algorithm>
 #include <math.h>
 #define REDRAW_CLIENT InvalidateRect(hWnd, NULL, TRUE)
 #ifdef UNICODE
@@ -215,14 +216,21 @@ int CheckPlayerInRect(const RECT& _rect, std::vector<Player*>& _bucket , std::ve
 {
     // If bucket is not emty then clear Bucket
     // Because ReFocusing Player
-    PlayerBucketClear(_bucket);
+
     for (int i = 0; i < _vecP.size(); ++i)
     {
+        auto iter = (std::find(_bucket.begin(), _bucket.end(), _vecP[i]));
         if (_rect.left <= _vecP[i]->m_ix && _vecP[i]->m_ix <= _rect.right
             && _rect.top <= _vecP[i]->m_iy && _vecP[i]->m_iy <= _rect.bottom)
         {
             _vecP[i]->m_eState = STATE::STATE_FOCUSING;
             _bucket.push_back(_vecP[i]);
+        }
+        // Not Good Code
+        else if (iter != _bucket.end())
+        {
+            (*iter)->m_eState = STATE::STATE_FREE;
+            _bucket.erase((std::find(_bucket.begin(), _bucket.end(), _vecP[i])));
         }
     }
     return 0;
@@ -260,16 +268,13 @@ int SetLookVecInRect(RECT& _rect, std::vector<Player*>_vecPlayer)
     {
         _vecPlayer[i]->m_iLook_X = _vecPlayer[i]->m_ix - (_rect.left + width_pivot);
         _vecPlayer[i]->m_iLook_Y = _vecPlayer[i]->m_iy - (_rect.bottom + height_pivot);
-        printf("원래의 사각형과 %d 번째 점의 차이 X : %d , Y ; %d\n", i+1,_vecPlayer[i]->m_iLook_X, _vecPlayer[i]->m_iLook_Y);
     }
-    printf("원래의 사각형의 기준점 X : %d Y : %d\n", (_rect.left + width_pivot), (_rect.bottom + height_pivot));
 
     return 0;
 }
 
 int SetRealLookVector(const int _originX,const int _originY,const int _clientX,const int _clientY, std::vector<Player*>_vecPlayer)
 {
-    printf("이동할 점 X : %d Y : %d\n", _clientX, _clientY);
 
     // 사각형 기준으로 차이점을 구한다 .
     for (int i = 0; i < _vecPlayer.size(); ++i)
@@ -297,11 +302,6 @@ int SetLookVector(const int _x,const int _y,RECT& _rect, std::vector<Player*>_ve
         int X_pivot = (_rect.left + (_rect.right - _rect.left) / 2);
         int Y_pivot = (_rect.bottom + (_rect.top - _rect.bottom) / 2);
         SetRealLookVector(X_pivot, Y_pivot,_x,_y, _vecPlayer);
-        // Test
-        for (int i = 0; i < _vecPlayer.size(); ++i)
-        {
-            _vecPlayer[i]->Update();
-        }
     }
     else if(1 == _vecPlayer.size())
     {
@@ -342,14 +342,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         GetCursorPos(&p);
         ScreenToClient(hWnd, &p);
         SetLookVector(p.x,p.y,GroupBox,vecFocusPlayer);
-
+        // Test
+        for (int i = 0; i < vecFocusPlayer.size(); ++i)
+        {
+            vecFocusPlayer[i]->Update();
+        }
         REDRAW_CLIENT;
         break;
     case WM_LBUTTONDOWN:
-        // MakeCursor Rect LT
+    // MakeCursor Rect LT
+    {
+        for (int i = 0; i < vecFocusPlayer.size(); ++i)
+            vecFocusPlayer[i]->m_eState = STATE::STATE_FREE;
+        vecFocusPlayer.clear();
+    }
         MouseRect.left = LOWORD(lParam);
         MouseRect.top = HIWORD(lParam);
+
+        MouseRect.right = MouseRect.left;
+        MouseRect.bottom = MouseRect.top;
+
         IsRectPosSet = true;
+        break;
+    case WM_LBUTTONUP:
+        IsRectPosSet = false;
+        CheckPlayerInRect(MouseRect, vecFocusPlayer, vecPlayer);
+        // Test
+        SetGroupRect(GroupBox, vecFocusPlayer);
+        REDRAW_CLIENT;
         break;
     case WM_MOUSEMOVE:
         // MakeCursor Rect RB
@@ -359,11 +379,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             MouseRect.bottom = HIWORD(lParam);
             REDRAW_CLIENT;
         }
-        break;
-    case WM_LBUTTONUP:
-        IsRectPosSet = false;
-        CheckPlayerInRect(MouseRect, vecFocusPlayer, vecPlayer);
-        REDRAW_CLIENT;
         break;
     case WM_COMMAND:
         {
@@ -386,9 +401,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            Rectangle(hdc, MouseRect.left, MouseRect.top, MouseRect.right, MouseRect.bottom);
+            if (IsRectPosSet)
+                Rectangle(hdc, MouseRect.left, MouseRect.top, MouseRect.right, MouseRect.bottom);
             if(1 < vecFocusPlayer.size())
                 Rectangle(hdc, GroupBox.left, GroupBox.top, GroupBox.right, GroupBox.bottom);
+            
+            Rectangle(hdc, GroupBox.left, GroupBox.top, GroupBox.right, GroupBox.bottom);
             DrawPlayers(hdc, vecPlayer);
             EndPaint(hWnd, &ps);
         }
